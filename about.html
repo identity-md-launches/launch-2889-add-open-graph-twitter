@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How Ghost Wheel works</title>
+  <meta name="description" content="How Ghost Wheel counts your spins with the WHEELY9000's rules, replays Squeektoshi's recorded runs, and reads his real Squeek blocks from SqueekCore.">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="about">
+    <p><a href="index.html">← Back to the race</a></p>
+    <h1>How Ghost Wheel works</h1>
+    <p>You race a ghost that replays one of Squeektoshi's real recorded runs, passage by passage, while your own wheel is counted with the rules his wheel sensor uses. His real Squeek blocks appear at the exact passages that completed them on SqueekCore.</p>
+
+    <h2>Your wheel is counted like his</h2>
+    <p>Squeektoshi's wheel carries a magnet that passes a sensor once per turn. The Squeekchain docs say: "One accepted magnet passage records one work unit." Your on-screen wheel works the same way. The game checks its sensor every 2 milliseconds and applies the counting rules the docs publish for the WHEELY9000 (<a href="https://docs.squeekchain.com/system/measurement/">Measuring wheel activity</a>):</p>
+    <table>
+      <thead><tr><th>Acceptance property</th><th>Counting rule</th></tr></thead>
+      <tbody>
+        <tr><td>Initial state</td><td>The Pi must observe an inactive sensor before accepting a passage</td></tr>
+        <tr><td>Inactive rearm</td><td>At least 10 milliseconds of observed inactive state</td></tr>
+        <tr><td>Passage spacing</td><td>At least 60 milliseconds between accepted passages</td></tr>
+        <tr><td>Repeated active samples</td><td>Add no work while the sensor stays active</td></tr>
+      </tbody>
+    </table>
+    <p>So, as the docs put it, "A magnet held beside the sensor counts once." The rules never look at direction, so spinning backwards counts too; the docs say "Accepted work does not prove animal identity, direction, physical cause, calories, or health." When one of these rules changes your count, the result screen says which one.</p>
+    <p>Your wheel has weight: your strokes push it and it coasts, so rocking it back and forth across the sensor is slow, as it would be on a real wheel. You can also pedal it with the ← and → keys in turn.</p>
+
+    <h2>His ghost is his real run</h2>
+    <p>The ghost replays passage times from the Squeekchain API's <code>/v1/measurement/runs</code>. The API describes it as "The device's record of wheel passages, grouped into immutable run segments with exact passage times. Use it to animate or analyse running sessions. This is evidence signed by the device's key, not work certified by SqueekCore." The ghost's magnet reaches its sensor at exactly those recorded times.</p>
+    <p>The game ships a small snapshot of 12 thirty-second windows from his first five nights on chain, 26 to 31 October 2026, read on 31 October. It has the fastest window of each night, steadier runs, and two gentle jogs. One is his very first run on chain.</p>
+
+    <h2>His blocks are read from the chain, not worked out</h2>
+    <p>Squeek blocks come from SqueekCore, the contract that certifies his settled work on Sepolia (<code>0x980b4424c007caf7a1f3670b48c8eaef7ebc3d44</code>). That is the live core the API names in <code>/v1/core</code> (<code>identities.core</code>); the docs' Deployments table still lists an earlier deployment from 12 October, <code>0x74665dAecA35A2303e767E76a2FF1FB6F93e119f</code>. For each block, <code>blockInfo</code> gives "The round that completed Squeek block <code>squeekBlock</code> … and the cumulative physical work at which it completed" (<a href="https://docs.squeekchain.com/developers/core/">SqueekCore reference</a>). On this deployment, cumulative work equals the number of accepted passages, so every block lands on one exact passage of his run, and that is where the game shows it.</p>
+    <p>The snapshot script checks the chain against the device for every round it uses: the work SqueekCore holds before and after the round must equal the device's passage count. If they ever disagree, it stops and writes no snapshot. The game never works out his blocks: it reads them from <code>blockInfo</code>, as the docs ask: "Count blocks from block units."</p>
+
+    <h2>The illustration under your result</h2>
+    <p>SqueekCore's pricing step is this: "Each active round is priced at the current difficulty into block units", using the difficulty in force before the round, given in work units per 1,000 blocks. The last line of your result applies that step to your passages at the difficulty of 31 October. It is only an illustration; his own blocks are never worked out this way. You do not mine anything here: in the docs' words, "The hamster mines Squeek blocks; Squeeks don't mine." (Squeeks are the NFTs.)</p>
+
+    <h2>The live chip</h2>
+    <p>The chip at the top reads the public <code>/v1/status</code> endpoint every 15 seconds. The docs describe it this way: "Poll it to show whether the wheel is turning and how far the next block is." If the API has no fresh reading, the chip says so instead of showing zero. It says his wheel is turning only when the reading is labelled <code>hardware</code>, his wheel's own sensor; the API also documents <code>simulated</code>, <code>replay</code> and <code>derived</code> data.</p>
+
+    <h2>Care comes first</h2>
+    <blockquote>"Never force exercise, wake the hamster for mining, or restrict food, water or rest to encourage running. Accept periods without block production." (<a href="https://docs.squeekchain.com/system/squeektoshi/">Squeektoshi</a>)</blockquote>
+    <p>Ghost Wheel only reads public records of runs he chose to make. It never asks him to run, and nothing you do here reaches his wheel. He sleeps by day, so the ghosts are what you race in daylight.</p>
+
+    <h2>Privacy and source</h2>
+    <p>There is no wallet, no sign-in and no tracking. The page loads its own files and calls <code>api.squeekchain.com/v1/status</code>, and nothing else. The code, the tests and the snapshot script are at <a href="https://github.com/senti23/squeek-ghost-wheel">github.com/senti23/squeek-ghost-wheel</a>. This is a community build for Squeekchain, not an official Squeekchain product.</p>
+  </main>
+</body>
+</html>
