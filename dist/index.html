@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ghost Wheel · race Squeektoshi's real runs</title>
+  <meta name="description" content="Race a ghost of Squeektoshi's real recorded wheel runs. Your spins are counted with the WHEELY9000's own rules, and his real Squeek blocks are read from SqueekCore.">
+  <meta property="og:title" content="Ghost Wheel · race Squeektoshi's real runs">
+  <meta property="og:description" content="Race a ghost of Squeektoshi's real recorded wheel runs. Your spins are counted with the WHEELY9000's own rules, and his real Squeek blocks are read from SqueekCore.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ghost-wheel-race-squeektoshi-s-r.imd.site/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <h1>Ghost Wheel</h1>
+      <p class="tag">Race a ghost of Squeektoshi's real recorded runs</p>
+    </div>
+    <p class="live" id="live" data-state="unknown">Live: checking…</p>
+  </header>
+
+  <main>
+    <section class="pick" aria-label="Choose a run">
+      <label for="race">Pick one of his runs</label>
+      <select id="race"></select>
+      <p class="race-info" id="raceInfo">Loading his recorded runs…</p>
+    </section>
+
+    <section class="track" aria-label="The race">
+      <canvas id="stage" tabindex="0" role="application" aria-label="Two wheels: yours and Squeektoshi's recorded ghost. Press Enter, or tap or click here, to start. Then circle your pointer or finger around your wheel, or press the left and right arrow keys in turn."></canvas>
+      <div class="bar" aria-hidden="true"><div class="fill" id="progress"></div></div>
+      <div class="controls">
+        <button id="start" class="primary" type="button">Start race</button>
+        <button id="sound" type="button" aria-pressed="true">Sound on</button>
+      </div>
+      <p class="hint">Circle your mouse, trackpad or finger around <b>your</b> wheel. No need to click. Or press <kbd>←</kbd> and <kbd>→</kbd> in turn, like pedals. Thirty seconds, most passages wins.</p>
+    </section>
+
+    <section class="result" id="result" hidden>
+      <h2 id="headline" tabindex="-1"></h2>
+      <p id="score"></p>
+      <p id="blocks"></p>
+      <ul id="notes" hidden></ul>
+      <p id="bout"></p>
+      <p class="fine" id="illustration"></p>
+      <div class="controls">
+        <button id="again" class="primary" type="button">Race again</button>
+        <button id="card" type="button">Save share card</button>
+        <button id="copy" type="button">Copy result</button>
+      </div>
+      <canvas id="cardCanvas" width="1200" height="630" hidden></canvas>
+    </section>
+  </main>
+
+  <footer>
+    <p><b>His ghost</b> replays passage times from the Squeekchain API's <code>/v1/measurement/runs</code>: in the API's words, "evidence signed by the device's key, not work certified by SqueekCore". <b>His blocks</b> are read from SqueekCore on Sepolia (<code>blockInfo</code>), which gives the cumulative work, here a passage number, at which each one completed.</p>
+    <p><b>Care first.</b> Squeektoshi runs when he chooses. Nothing here asks him to run, and nothing you do here reaches his wheel.</p>
+    <p><a href="about.html">How it works</a> · <a href="https://github.com/senti23/squeek-ghost-wheel">Source code</a> · A community build for Squeekchain, not an official Squeekchain product.</p>
+  </footer>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
